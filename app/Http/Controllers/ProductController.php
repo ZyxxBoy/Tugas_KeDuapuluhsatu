@@ -7,33 +7,36 @@ use Illuminate\Routing\Controller;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = [
-            [
-                'id' => 1,
-                'name' => 'Smartwatch Elite',
-                'category' => 'Elektronik',
-                'price' => 1250000,
-                'image' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
-            ],
-            [
-                'id' => 2,
-                'name' => 'Headphone Pro Max',
-                'category' => 'Audio',
-                'price' => 850000,
-                'image' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
-            ],
-            [
-                'id' => 3,
-                'name' => 'Sepatu Sneakers',
-                'category' => 'Fashion',
-                'price' => 450000,
-                'image' => 'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
-            ],
-        ];
+        $query = \App\Models\Product::with('category');
 
-        return view('produk', compact('products'));
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->filled('category')) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        // Sorting Logic
+        if ($request->sort == 'termurah') {
+            $query->orderBy('price', 'asc');
+        } elseif ($request->sort == 'termahal') {
+            $query->orderBy('price', 'desc');
+        } else {
+            $query->latest(); // Default: Terbaru
+        }
+
+        $products = $query->paginate(6)->withQueryString();
+        $categories = \App\Models\ProductCategory::all();
+
+        return view('produk', compact('products', 'categories'));
     }
 
     /**
