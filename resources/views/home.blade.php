@@ -67,81 +67,35 @@
                 </div>
 
                 <div class="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-                    <!-- Product 1 -->
-                    <div class="group relative flex flex-col bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-4 border border-gray-100 h-full">
-                        <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-60 lg:aspect-none">
-                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Smartwatch" class="w-full h-full object-center object-cover lg:w-full lg:h-full">
-                        </div>
-                        <div class="mt-4 flex flex-col flex-grow justify-between">
-                            <div>
-                                <h3 class="text-sm text-gray-700 font-medium">
-                                    <a href="#">
-                                        <span aria-hidden="true" class="absolute inset-0"></span>
-                                        Smartwatch Elite
-                                    </a>
-                                </h3>
-                                <p class="mt-1 text-sm text-gray-500">Elektronik</p>
+                    @forelse($products as $product)
+                        <div class="group relative flex flex-col bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-4 border border-gray-100 h-full">
+                            <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-60 lg:aspect-none">
+                                @if($product->image)
+                                    <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="w-full h-full object-center object-cover lg:w-full lg:h-full">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
+                                        No Image
+                                    </div>
+                                @endif
                             </div>
-                            <p class="text-sm font-semibold text-gray-900">Rp 1.250.000</p>
-                        </div>
-                    </div>
-
-                    <!-- Product 2 -->
-                    <div class="group relative flex flex-col bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-4 border border-gray-100 h-full">
-                        <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-60 lg:aspect-none">
-                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Headphone" class="w-full h-full object-center object-cover lg:w-full lg:h-full">
-                        </div>
-                        <div class="mt-4 flex flex-col flex-grow justify-between">
-                            <div>
-                                <h3 class="text-sm text-gray-700 font-medium">
-                                    <a href="#">
-                                        <span aria-hidden="true" class="absolute inset-0"></span>
-                                        Headphone Pro Max
-                                    </a>
-                                </h3>
-                                <p class="mt-1 text-sm text-gray-500">Audio</p>
+                            <div class="mt-4 flex flex-col flex-grow justify-between">
+                                <div>
+                                    <h3 class="text-sm text-gray-700 font-medium">
+                                        <a href="{{ route('produk.showPublic', $product->slug) }}">
+                                            <span aria-hidden="true" class="absolute inset-0"></span>
+                                            {{ $product->name }}
+                                        </a>
+                                    </h3>
+                                    <p class="mt-1 text-sm text-gray-500">{{ $product->category->name ?? 'Uncategorized' }}</p>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-900">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
                             </div>
-                            <p class="text-sm font-semibold text-gray-900">Rp 850.000</p>
                         </div>
-                    </div>
-
-                    <!-- Product 3 -->
-                    <div class="group relative flex flex-col bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-4 border border-gray-100 h-full">
-                        <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-60 lg:aspect-none">
-                            <img src="https://images.unsplash.com/photo-1584916201218-f4242ceb4809?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Sepatu Kets" class="w-full h-full object-center object-cover lg:w-full lg:h-full">
+                    @empty
+                        <div class="col-span-full text-center py-10 text-gray-500">
+                            Belum ada produk yang ditambahkan.
                         </div>
-                        <div class="mt-4 flex flex-col flex-grow justify-between">
-                            <div>
-                                <h3 class="text-sm text-gray-700 font-medium">
-                                    <a href="#">
-                                        <span aria-hidden="true" class="absolute inset-0"></span>
-                                        Sepatu Sneakers
-                                    </a>
-                                </h3>
-                                <p class="mt-1 text-sm text-gray-500">Fashion</p>
-                            </div>
-                            <p class="text-sm font-semibold text-gray-900">Rp 450.000</p>
-                        </div>
-                    </div>
-
-                    <!-- Product 4 -->
-                    <div class="group relative flex flex-col bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-4 border border-gray-100 h-full">
-                        <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-60 lg:aspect-none">
-                            <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Kamera Digital" class="w-full h-full object-center object-cover lg:w-full lg:h-full">
-                        </div>
-                        <div class="mt-4 flex flex-col flex-grow justify-between">
-                            <div>
-                                <h3 class="text-sm text-gray-700 font-medium">
-                                    <a href="#">
-                                        <span aria-hidden="true" class="absolute inset-0"></span>
-                                        Kamera Mirrorless
-                                    </a>
-                                </h3>
-                                <p class="mt-1 text-sm text-gray-500">Kamera</p>
-                            </div>
-                            <p class="text-sm font-semibold text-gray-900">Rp 6.500.000</p>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
 
                 <div class="mt-6 sm:hidden">

@@ -54,9 +54,11 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $slug)
     {
-        //
+        $product = Product::with('category')->where('slug', $slug)->firstOrFail();
+        $related_products = Product::where('product_category_id', $product->product_category_id)->where('slug', '!=', $slug)->take(4)->get();
+        return view('dashboard.produk.show', compact('product', 'related_products'));
     }
 
     /**

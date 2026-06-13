@@ -83,7 +83,7 @@
                             <div class="mt-4 flex flex-col flex-grow justify-between">
                                 <div>
                                     <h3 class="text-sm text-gray-700 font-medium">
-                                        <a href="#">
+                                        <a href="{{ route('produk.showPublic', $product->slug) }}">
                                             <span aria-hidden="true" class="absolute inset-0"></span>
                                             {{ $product->name }}
                                         </a>

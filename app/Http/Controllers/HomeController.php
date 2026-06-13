@@ -9,7 +9,19 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('home');
+        $products = \App\Models\Product::with('category')->latest()->take(4)->get();
+        return view('home', compact('products'));
+    }
+
+    public function showPublic(string $slug)
+    {
+        $product = \App\Models\Product::with('category')->where('slug', $slug)->firstOrFail();
+        $related_products = \App\Models\Product::where('product_category_id', $product->product_category_id)
+            ->where('slug', '!=', $slug)
+            ->take(4)
+            ->get();
+            
+        return view('produk-detail', compact('product', 'related_products'));
     }
 
     public function produk(Request $request)

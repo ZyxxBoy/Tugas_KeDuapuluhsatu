@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/produk', [HomeController::class, 'produk'])->name('produk');
+Route::get('/produk/{slug}', [HomeController::class, 'showPublic'])->name('produk.showPublic');
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified', 'admin'])->name('dashboard');
