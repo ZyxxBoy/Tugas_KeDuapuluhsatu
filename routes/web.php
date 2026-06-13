@@ -13,14 +13,12 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/produk', [HomeController::class, 'produk'])->name('produk');
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified', 'admin'])->name('dashboard');
 
 
 Route::middleware('auth')->group(function () {
-    Route::prefix('dasboard')->group(function () {
-        Route::get('/', function () {
-            return view('dasboard');
-        });
+    Route::prefix('dashboard')->middleware('admin')->group(function () {
+
         Route::resource('/produk', ProductController::class)->names('dashboard.produk');
         Route::resource('/kategori', ProductCategoryController::class)->names('dashboard.kategori');
         Route::resource('/order', OrderController::class)->names('dashboard.order');

@@ -27,8 +27,8 @@
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <!-- Settings Dropdown & Logout -->
+            <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-2">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -59,6 +59,14 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
+
+                <!-- Standalone Logout Button -->
+                <form method="POST" action="{{ route('logout') }}" class="m-0 border-l border-gray-200 pl-2">
+                    @csrf
+                    <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-red-200 text-sm leading-4 font-medium rounded-md text-red-600 bg-white hover:text-red-700 hover:bg-red-50 focus:outline-none transition ease-in-out duration-150">
+                        Log Out
+                    </button>
+                </form>
             </div>
 
             <!-- Hamburger -->
