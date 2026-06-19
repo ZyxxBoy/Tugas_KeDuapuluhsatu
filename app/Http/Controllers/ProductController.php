@@ -39,16 +39,31 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->all();
-        $data['slug'] = Str::slug($request->name);
+        $slug = Str::slug($request->name);
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('products', 'public');
+        //check if slug already exists
+        $count = Product::where('slug', $slug)->count();
+        if ($count > 0) {
+            return redirect()->route('dashboard.produk.index')->with('error', 'Produk dengan nama tersebut sudah ada.');
         }
-
-        Product::create($data);
-
+        
+        //simpan gambar yang di crop
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        } else {
+            $imagePath = null;
+        }
+        $product = Product::create([
+            'name' => $request->name,
+            'slug' => $slug,
+            'product_category_id' => $request->product_category_id,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'description' => $request->description,
+            'image' => $imagePath,
+        ]);
         return redirect()->route('dashboard.produk.index')->with('success', 'Produk berhasil ditambahkan.');
+        
     }
 
     /**

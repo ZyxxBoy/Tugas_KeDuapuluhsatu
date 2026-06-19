@@ -111,6 +111,27 @@
         @method('DELETE')
     </form>
 
+    <script>
+        //input validation for add category
+        document.getElementById('add-category-from').addEventListener('submit', function(event) {
+            const nameInput = document.getElementById('create_name');
+            if (nameInput.value.trim() === '') {
+                event.preventDefault();
+                alert('Nama kategori tidak boleh kosong!');
+            }
+
+            if(nameInput.value.trim().length > 255){
+                event.preventDefault();
+                alert('Nama kategori maksimal 255 karakter!');
+            }
+
+            if(nameInput.value.trim().length < 3){
+                event.preventDefault();
+                alert('Nama kategori minimal 3 karakter!');
+            }
+        });
+
+    </script>
     <!-- jQuery and DataTables JS -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

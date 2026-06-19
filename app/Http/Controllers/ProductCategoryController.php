@@ -35,10 +35,20 @@ class ProductCategoryController extends Controller
             'name' => 'required|string|max:255|unique:product_categories,name',
         ]);
 
-        ProductCategory::create([
+        $slug = strtolower(str_replace(' ', '-', $request->name));
+        
+        //check if slug already exists
+        if (ProductCategory::where('slug', $slug)->exists()) {
+           return redirect()->route('dashboard.kategori.index')->withErrors(['name' => 'Kategori sudah ada.'])->withInput();
+        }
+
+        //simpan category baru
+        $category = ProductCategory::create([
             'name' => $request->name,
-            'slug' => Str::slug($request->name),
+            'slug' => $slug,
         ]);
+
+        //cek apakah berhasil disimpan
 
         return redirect()->route('dashboard.kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
