@@ -48,11 +48,15 @@ class ProductController extends Controller
         }
         
         //simpan gambar yang di crop
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-        } else {
-            $imagePath = null;
-        }
+        $croppedImageData = $request->input('cropped_image');
+        $croppedImageData = str_replace('data:image/png;base64,', '', $croppedImageData);
+        $croppedImageData = str_replace('data:image/jpeg;base64,', '', $croppedImageData);
+        $croppedImageData = str_replace('data:image/jpg;base64,', '', $croppedImageData);
+        $croppedImageData = str_replace('data:image/gif;base64,', '', $croppedImageData);
+        $croppedImageData = base64_decode($croppedImageData);
+        $imagePath = 'products/' . $slug . '.jpg';
+        Storage::disk('public')->put($imagePath, $croppedImageData);
+
         $product = Product::create([
             'name' => $request->name,
             'slug' => $slug,
@@ -64,6 +68,20 @@ class ProductController extends Controller
         ]);
         return redirect()->route('dashboard.produk.index')->with('success', 'Produk berhasil ditambahkan.');
         
+    }
+
+    private function SaveImage($image) {
+        if($image == null) return null;
+
+        $croppedImageData = str_replace('data:image/png;base64,', '', $image);
+        $croppedImageData = str_replace('data:image/jpeg;base64,', '', $croppedImageData);
+        $croppedImageData = str_replace('data:image/jpg;base64,', '', $croppedImageData);
+        $croppedImageData = str_replace('data:image/gif;base64,', '', $croppedImageData);
+        $croppedImageData = base64_decode($croppedImageData);
+        $imagePath = 'products/' . $slug . '.jpg';
+        Storage::disk('public')->put($imagePath, $croppedImageData);
+
+        return $imagePath;
     }
 
     /**
@@ -100,18 +118,22 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $produk = Product::findOrFail($id);
-        $data = $request->all();
-        $data['slug'] = Str::slug($request->name);
-
+        $product = Product::findOrFail($id);
+        $product->name = $request->name;
+        $product->slug = Str::slug($request->name);
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->product_category_id = $request->product_category_id;
+        
         if ($request->hasFile('image')) {
-            if ($produk->image) {
-                Storage::disk('public')->delete($produk->image);
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
             }
-            $data['image'] = $request->file('image')->store('products', 'public');
+            $product->image = $request->file('image')->store('products', 'public');
         }
 
-        $produk->update($data);
+        $product->stock = $request->stock;
+        $product->save();
 
         return redirect()->route('dashboard.produk.index')->with('success', 'Produk berhasil diperbarui.');
     }

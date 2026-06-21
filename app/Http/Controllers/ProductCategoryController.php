@@ -73,20 +73,30 @@ class ProductCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        $kategori = ProductCategory::findOrFail($id);
-
         $request->validate([
-            'name' => 'required|string|max:255|unique:product_categories,name,' . $kategori->id,
+            'name'=>['required','string', 'max:255']
         ]);
 
-        $kategori->update([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-        ]);
+        $name_check = ProductCategory::query()
+            ->where('name', $request->name)
+            ->where('id', '!=', $id)
+            ->exists();
 
-        return redirect()->route('dashboard.kategori.index')->with('success', 'Kategori berhasil diperbarui.');
+        if($name_check){
+            return redirect()->back()->withErrors(['Nama kategori sudah ada!']);
+        }else{
+            $category = ProductCategory::findOrFail($id);
+
+            $category->name = $request->name;
+            $category->slug = Str::slug($request->name);
+            $category->save();
+
+            return redirect()
+                ->route('dashboard.kategori.index')
+                ->with('success', 'Kategori berhasil diperbarui!');
+        }
     }
 
     /**
